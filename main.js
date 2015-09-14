@@ -16,8 +16,6 @@ var log = function() {
 exports.handler = function(event, context) {
     log('Received event:', event);
 
-	var appId = event.appId;
-	var appName = event.appName;
     var region = event.region;
     var table_report = event.table_report;
     var table_catch = event.table_catch;
@@ -64,13 +62,23 @@ exports.handler = function(event, context) {
     		 function(res, next) {
     			 log("Result of Query: ", res);
     			 
-    			 report.CATCHES = res.Items;
+    			 report.title = "Report:" + reportId;
+    			 report.description = report.title;
+    			 report.CATCHES = res.Items.map(function(fish) {
+    				 if (!fish.CONTENT.length) fish.CONTENT.length = "";
+    				 if (!fish.CONTENT.weight) fish.CONTENT.weight = "";
+    				 return fish;
+    			 });
     			 next(null, report);
     		 },
     		 function(report, next) {
+    			 log("Report: ", report);
+    			 
+    			 var base64 = new Buffer(JSON.stringify(event)).toString('base64');
+    			 
     			 next(null, {
-    				 "appId": appId,
-    				 "appName": appName,
+    				 "info": event,
+    				 "info_base64": base64,
     				 "report": report
     			 });
     		 }
