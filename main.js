@@ -64,7 +64,11 @@ exports.handler = function(event, context) {
     		 function(res, next) {
     			 log("Result of Query: ", res);
     			 
-    			 report.CATCHES = res.Items;
+    			 report.CATCHES = res.Items.map(function(fish) {
+    				 if (!fish.CONTENT.length) fish.CONTENT.length = "";
+    				 if (!fish.CONTENT.weight) fish.CONTENT.weight = "";
+    				 return fish;
+    			 });
     			 next(null, report);
     		 },
     		 function(report, next) {
