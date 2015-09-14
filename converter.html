@@ -1,0 +1,40 @@
+#set($result = $input.path('$'))
+
+<!DOCTYPE html>
+<html>
+    <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
+        <title>$result.report.title</title>
+        
+        <meta property="fb:app_id" content="$result.info.appId" />
+        <meta property="og:type" content="$result.info.appName:$result.info.objectName" />
+        <meta property="og:url" content="https://api.fathens.org/triton-note/open_graph/catch_report/$util.urlEncode($result.info_base64)" />
+        <meta property="og:title" content="$result.report.title" />
+        <meta property="og:image" content="$result.report.IMAGE_URL" />
+        <meta property="og:description" content="$result.report.description" />
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" >
+    </head>
+    
+    <body>
+        <div class="photo">
+            <img src="$result.report.IMAGE_URL"/>
+        </div>
+        
+        <table class="catches">
+            <tr class="header">
+                <th class="name">Name</th>
+                <th class="count">Count</th>
+                <th class="length">Length</th>
+                <th class="weight">Weight</th>
+            </tr>
+            #foreach($fish in $result.report.CATCHES)
+            <tr>
+                <td class="name">$fish.CONTENT.name</td>
+                <td class="count">$fish.CONTENT.count</td>
+                <td class="length">$fish.CONTENT.length</td>
+                <td class="weight">$fish.CONTENT.weight</td>
+            </tr>
+            #end
+        </table>
+    </body>
+</html>
