@@ -62,6 +62,8 @@ exports.handler = function(event, context) {
     		 function(res, next) {
     			 log("Result of Query: ", res);
     			 
+    			 report.title = "Report:" + reportId;
+    			 report.description = report.title;
     			 report.CATCHES = res.Items.map(function(fish) {
     				 if (!fish.CONTENT.length) fish.CONTENT.length = "";
     				 if (!fish.CONTENT.weight) fish.CONTENT.weight = "";
