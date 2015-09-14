@@ -34,8 +34,8 @@ exports.handler = function(event, context) {
     		[
     		 function(next) {
     			 var params = {
-    					 "TableName": table_report,
-    					 "Key": {}
+    					 TableName: table_report,
+    					 Key: {}
     			 };
         		 params.Key[column_cognitoId] = cognitoId;
         		 params.Key[column_reportId] = reportId;
@@ -48,9 +48,9 @@ exports.handler = function(event, context) {
     			 report = res.Item;
     			 
     			 var params = {
-    					 "TableName": table_catch,
-    					 "IndexName": indexName,
-    					 "KeyConditions": [
+    					 TableName: table_catch,
+    					 IndexName: indexName,
+    					 KeyConditions: [
     					                   docClient.Condition(column_cognitoId, "EQ", cognitoId),
     					                   docClient.Condition(column_reportId, "EQ", reportId)
     					                   ]
