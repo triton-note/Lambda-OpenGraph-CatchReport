@@ -1,0 +1,32 @@
+@import "font";
+
+div.photo {
+  img {
+    width: 400px;
+  }
+}
+
+table.catches {
+  width: 400px;
+  margin-top: 20px;
+  padding: 5px;
+  border-collapse: collapse;
+  
+  text-align: left;
+  
+  tr.header {
+    background-color: lightgray;
+    @include font-bold(16px);
+    
+    th {
+      border: 1px gray solid;
+    }
+  }
+  tr.data {
+    @include font-normal(16px);
+    
+    td {
+      border: 1px lightgray solid;
+    }
+  }
+}

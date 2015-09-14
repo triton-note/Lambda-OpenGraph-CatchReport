@@ -1,6 +1,7 @@
 var async = require('async');
 var aws = require("aws-sdk");
 var dbdoc = require('dynamodb-doc');
+var s3 = new aws.S3();
 
 var log = function() {
 	var args = Array.prototype.map.call(arguments, function(value) {
@@ -17,6 +18,7 @@ exports.handler = function(event, context) {
     log('Received event:', event);
 
     var region = event.region;
+    var bucketName = event.bucketName;
     var table_report = event.table_report;
     var table_catch = event.table_catch;
     var column_cognitoId = "COGNITO_ID";
@@ -34,8 +36,8 @@ exports.handler = function(event, context) {
     		[
     		 function(next) {
     			 var params = {
-    					 "TableName": table_report,
-    					 "Key": {}
+    					 TableName: table_report,
+    					 Key: {}
     			 };
         		 params.Key[column_cognitoId] = cognitoId;
         		 params.Key[column_reportId] = reportId;
@@ -46,11 +48,24 @@ exports.handler = function(event, context) {
     		 function(res, next) {
     			 log("Result of GetItem: ", res);
     			 report = res.Item;
+
+    			 var params = {
+    					 Expires: 10 * 60,
+    					 Bucket: bucketName,
+    					 Key: "photo/reduced/mainview/" + cognitoId + "/" + reportId + "/photo_file.jpg"
+    			 };
+    			 log("S3 getURL: ", params);
+    			 
+    			 s3.getSignedUrl("getObject", params, next);
+    		 },
+    		 function(url, next) {
+    			 log("Image URL: ", url);
+    			 report.IMAGE_URL = url;
     			 
     			 var params = {
-    					 "TableName": table_catch,
-    					 "IndexName": indexName,
-    					 "KeyConditions": [
+    					 TableName: table_catch,
+    					 IndexName: indexName,
+    					 KeyConditions: [
     					                   docClient.Condition(column_cognitoId, "EQ", cognitoId),
     					                   docClient.Condition(column_reportId, "EQ", reportId)
     					                   ]
