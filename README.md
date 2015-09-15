@@ -2,13 +2,11 @@
 AWS Lambda to get properties of catch report, and, by API Gateway, Display it for HTML format.
 
 ## 呼び出し方
----
 JSON を Base64 + URLEncode して url のサブパスとして渡します。
 
 ``例) https://api.fathens.org/triton-note/open_graph/catch_report/<base64data>``
 
----
-JSON 内のプロパティ
+### JSON 内のプロパティ
 
 |property|description|
 |:--|:--|
