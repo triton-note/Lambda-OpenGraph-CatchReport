@@ -1,4 +1,5 @@
 var async = require('async');
+var yaml = require('yaml-js');
 var aws = require("aws-sdk");
 var dbdoc = require('dynamodb-doc');
 var s3 = new aws.S3();
@@ -49,8 +50,24 @@ exports.handler = function(event, context) {
     			 log("Result of GetItem: ", res);
     			 report = res.Item;
 
+    			 s3.getObject({
+					 Bucket: bucketName, 
+					 Key: "unauthorized/lambda.yaml"
+				 }, next);
+    		 },
+			 function(res, next) {
+    			 try {
+					 var text = res.Body.toString();
+					 var settings = yaml.load(text);
+					 log("Settings: ", settings);
+					 next(null, settings);
+    			 } catch (ex) {
+    				 next(ex);
+    			 }
+			 },
+    		 function(settings, next) {
     			 var params = {
-    					 Expires: 10 * 60,
+    					 Expires: settings.photo.urlTimeout,
     					 Bucket: bucketName,
     					 Key: "photo/reduced/mainview/" + cognitoId + "/" + reportId + "/photo_file.jpg"
     			 };
