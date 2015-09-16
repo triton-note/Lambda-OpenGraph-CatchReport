@@ -19,6 +19,7 @@ exports.handler = function(event, context) {
 
     var region = event.region;
     var bucketName = event.bucketName;
+    var urlTimeout = event.urlTimeout;
     var table_report = event.table_report;
     var table_catch = event.table_catch;
     var column_cognitoId = "COGNITO_ID";
@@ -48,25 +49,9 @@ exports.handler = function(event, context) {
     		 function(res, next) {
     			 log("Result of GetItem: ", res);
     			 report = res.Item;
-
-    			 s3.getObject({
-					 Bucket: bucketName, 
-					 Key: "unauthorized/lambda.yaml"
-				 }, next);
-    		 },
-			 function(res, next) {
-    			 try {
-					 var text = res.Body.toString();
-					 var settings = yaml.load(text);
-					 log("Settings: ", settings);
-					 next(null, settings);
-    			 } catch (ex) {
-    				 next(ex);
-    			 }
-			 },
-    		 function(settings, next) {
+    			 
     			 var params = {
-    					 Expires: settings.photo.urlTimeout,
+    					 Expires: urlTimeout,
     					 Bucket: bucketName,
     					 Key: "photo/reduced/mainview/" + cognitoId + "/" + reportId + "/photo_file.jpg"
     			 };
