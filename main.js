@@ -1,5 +1,4 @@
 var async = require('async');
-var yaml = require('yaml-js');
 var aws = require("aws-sdk");
 var dbdoc = require('dynamodb-doc');
 var s3 = new aws.S3();
